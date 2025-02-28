@@ -1,0 +1,274 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brokerage Software</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #444;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #0e101a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #05060c;
+        }
+        #brokerageAmount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3F51B5;
+            margin-top: 10px;
+        }
+        #savedDataDisplay {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Brokerage Software</h1>
+        <h2>Brokerage Contracts</h2>
+        <form id="brokerageForm">
+            <label for="name">Broker Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="mobileNo">Mobile No.:</label>
+            <input type="tel" id="mobileNo" name="mobileNo" required>
+
+            <label for="center">Center:</label>
+            <input type="text" id="center" name="center" required>
+
+            <label for="sellerParty">Seller Party:</label>
+            <input type="text" id="sellerParty" name="sellerParty" required>
+
+            <label for="buyerParty">Buyer Party:</label>
+            <input type="text" id="buyerParty" name="buyerParty" required>
+
+            <label for="sellerStation">Seller Station:</label>
+            <input type="text" id="sellerStation" name="sellerStation" required>
+
+            <label for="buyerStation">Buyer Station:</label>
+            <input type="text" id="buyerStation" name="buyerStation" required>
+
+            <label for="sellerChatId">Seller Telegram Chat ID:</label>
+            <input type="text" id="sellerChatId" name="sellerChatId" required>
+
+            <label for="buyerChatId">Buyer Telegram Chat ID:</label>
+            <input type="text" id="buyerChatId" name="buyerChatId" required>
+
+
+            <label for="item">Item:</label>
+            <select id="item" name="item" required>
+                <option value="">Select an item</option>
+                <option value="Rice">Rice</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Corn">Corn</option>
+                <option value="Soybean">Soybean</option>
+                <option value="Cotton">Cotton</option>
+            </select>
+
+            <label for="weight">Weight:</label>
+            <input type="number" id="weight" name="weight" required>
+
+            <label for="rate">Rate:</label>
+            <input type="number" id="rate" name="rate" step="0.01" required>
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="brokerageRate">Brokerage Rate (per 100 units):</label>
+            <input type="number" id="brokerageRate" name="brokerageRate" step="0.01" required>
+
+            <button type="button" onclick="calculateBrokerage()">Calculate Brokerage</button>
+
+            <div id="brokerageAmount"></div>
+
+            <button type="button" onclick="saveData()" style="margin-top: 20px;">Save</button>
+            <button type="button" onclick="sendTelegramMessages()" style="margin-top: 20px;">Send Telegram Messages</button>
+            <button type="button" onclick="viewSavedData()" style="margin-top: 10px;">View Saved Data</button>
+
+            <div id="savedDataDisplay" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; display: none;"></div>
+        </form>
+    </div>
+
+    <script>
+        // Load saved data when the page loads
+        window.onload = function() {
+            const savedData = localStorage.getItem('brokerageData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = data[key];
+                    }
+                });
+                if (data.brokerageAmount) {
+                    document.getElementById('brokerageAmount').innerText = data.brokerageAmount;
+                }
+            }
+        };
+
+        function calculateBrokerage() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const brokerageRate = parseFloat(document.getElementById('brokerageRate').value);
+            const brokerage = (weight * brokerageRate);
+            const brokerageAmount = `Brokerage Amount: ${brokerage.toFixed(2)}`;
+            document.getElementById('brokerageAmount').innerText = brokerageAmount;
+            
+            const data = JSON.parse(localStorage.getItem('brokerageData') || '{}');
+            data.brokerageAmount = brokerageAmount;
+            localStorage.setItem('brokerageData', JSON.stringify(data));
+        }
+
+        // Function to save data
+        function saveData() {
+            console.log("Save data function called");
+            const form = document.getElementById('brokerageForm');
+            const data = {};
+            Array.from(form.elements).forEach(element => {
+                if (element.name) {
+                    data[element.name] = element.value;
+                }
+        });
+
+    // Add brokerage amount to the data
+    const brokerageAmountElement = document.getElementById('brokerageAmount').innerText;
+    data['brokerageAmount'] = brokerageAmountElement.replace('Brokerage Amount: ', '');
+
+    // Send data to Flask backend
+    fetch('/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Data saved successfully!');
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.error || 'Failed to save data');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving data: ' + error.message);
+    });
+}
+
+        // Auto-save as user types
+        const form = document.getElementById('brokerageForm');
+        form.addEventListener('input', function(e) {
+            if (e.target.name) {
+                const data = JSON.parse(localStorage.getItem('brokerageData') || '{}');
+                data[e.target.name] = e.target.value;
+                localStorage.setItem('brokerageData', JSON.stringify(data));
+            }
+        });
+
+        function viewSavedData() {
+            const savedData = localStorage.getItem('brokerageData');
+            const savedDataDisplay = document.getElementById('savedDataDisplay');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                let displayHtml = '<h3>Saved Data:</h3>';
+                for (const [key, value] of Object.entries(data)) {
+                    displayHtml += `<p><strong>${key}:</strong> ${value}</p>`;
+                }
+                savedDataDisplay.innerHTML = displayHtml;
+                savedDataDisplay.style.display = 'block';
+            } else {
+                savedDataDisplay.innerHTML = '<p>No saved data found.</p>';
+                savedDataDisplay.style.display = 'block';
+            }
+        }
+
+        function sendTelegramMessages() {
+        const sellerChatId = document.getElementById('sellerChatId').value;
+        const buyerChatId = document.getElementById('buyerChatId').value;
+
+        const contractDetails = `
+        Broker Name: ${document.getElementById('name').value}
+        Seller Party: ${document.getElementById('sellerParty').value}
+        Buyer Party: ${document.getElementById('buyerParty').value}
+        Item: ${document.getElementById('item').value}
+        Weight: ${document.getElementById('weight').value}
+        Rate: ${document.getElementById('rate').value}
+        Date: ${document.getElementById('date').value}
+        Brokerage Amount: ${document.getElementById('brokerageAmount').innerText.replace('Brokerage Amount: ', '')}
+        `;
+
+        fetch('/send_telegram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                sellerChatId: sellerChatId,
+                buyerChatId: buyerChatId,
+                contractDetails: contractDetails
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.seller_response.error || data.buyer_response.error) {
+                alert('Error sending Telegram messages.');
+            } else {
+                alert('Telegram messages sent successfully!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error sending Telegram messages: ' + error.message);
+        });
+    }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,26 @@
+				Brokerage Software
+
+Broker Details:
+Name: 		Mobile No.: 		Center: 	
+
+Seller Party: 		Buyer Party:		
+
+Seller Station: 	Buyer Station:
+
+Item: 			Weight: 		
+
+Rate: 			Date:	
+		
+Brokerage Rate: 	Brokerage: 
+
+
+7857604095:AAHTTbABRMYUd4cswvNK3xmkGOkOR61qRyQ
+
+
+Papa -- 7486907575
+
+pranay -- 5358160034
+
+https://gist.github.com/nafiesl/4ad622f344cd1dc3bb1ecbe468ff9f8a
+
+https://api.telegram.org/bot7857604095:AAHTTbABRMYUd4cswvNK3xmkGOkOR61qRyQ/getUpdates
