@@ -8,7 +8,7 @@ app = Flask(__name__)
 CSV_FILE = 'brokerage_data.csv'
 
 # Telegram Bot configuration
-TELEGRAM_BOT_TOKEN = '7857604095:AAHTTbABRMYUd4cswvNK3xmkGOkOR61qRyQ'
+TELEGRAM_BOT_TOKEN = '#########################'
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
 
 # Initialize CSV file if it doesn't exist
